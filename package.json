@@ -57,9 +57,13 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.13",
     "@babel/polyfill": "^7.12.1",
+    "@types/core-js": "^2.5.4",
+    "core-js": "^3.8.1",
     "normalize.css": "^8.0.1",
     "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react-dom": "^16.14.0",
+    "regenerator-runtime": "^0.13.7"
   }
 }
