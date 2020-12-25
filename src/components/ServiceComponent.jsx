@@ -20,7 +20,7 @@ export default class CovidService {
   }
 
   async getAllCountriesPopulationAndFlags() {
-    const response = await this.getResource('https://restcountries.eu/rest/v2/all?fields=name;population;flag');
+    const response = await this.getResource(`https://restcountries.eu/rest/v2/all?fields=name;population;flag;alpha2Code`);
 
     return response;
   }

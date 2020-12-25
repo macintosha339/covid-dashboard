@@ -1,73 +1,55 @@
-/* eslint-disable max-len */
 import CovidService from './ServiceComponent';
 
 const covidStatState = () => {
   const service = new CovidService();
 
   async function updateStatisctic() {
-    const state = { current: 0 };
-    const countriesStat = [];
-    let flagsArray;
-    let countriesArray;
+    const state = {};
+    let covidData;
+    let globalStat;
+    let populationCount = 0;
+    let ind = 0;
     await service
-      .getAllCountriesPopulationAndFlags()
-      .then((response) => {
-        const populationArray = response.map((item) => item.population);
-        const population = populationArray.reduce((cur, next) => cur += next);
-        flagsArray = response.map((item) => item.flag);
-        countriesArray = response.map((item) => item.name);
-        state.population = population;
-        for (let i = 0; i < countriesArray.length; i++) {
-          const obj = {
-            flag: flagsArray[i],
-            country: countriesArray[i],
-            population: populationArray[i],
-          };
-          countriesStat.push(obj);
-        }
+      .getAllCases()
+      .then(({ Global, Countries }) => {
+        globalStat = Global;
+        covidData = Countries;
       })
       .then(async () => {
         await service
-          .getAllCases()
-          .then((response) => {
-            state.countriesStat = [];
-            const sortedArrayOfCoyntries = countriesStat.filter((item) => response.Countries.some((elem) => item.country === elem.Country));
-            const sortedArrayOfStat = response.Countries.filter((item) => sortedArrayOfCoyntries.some((elem) => item.Country === elem.country));
-            for (let i = 0; i < sortedArrayOfStat.length; i++) {
-              const obj = {
-                id: i,
-                flag: sortedArrayOfCoyntries[i].flag,
-                country: sortedArrayOfCoyntries[i].country,
-                population: sortedArrayOfCoyntries[i].population,
-                TotalConfirmed: sortedArrayOfStat[i].TotalConfirmed,
-                TotalDeaths: sortedArrayOfStat[i].TotalDeaths,
-                TotalRecovered: sortedArrayOfStat[i].TotalRecovered,
-                NewConfirmed: sortedArrayOfStat[i].NewConfirmed,
-                NewDeaths: sortedArrayOfStat[i].NewDeaths,
-                NewRecovered: sortedArrayOfStat[i].NewRecovered,
-                GlobalCasesPer100Thousand: Math.ceil(sortedArrayOfStat[i].TotalConfirmed / (sortedArrayOfCoyntries[i].population / 100000)),
-                GlobalRecoveredPer100Thousand: Math.ceil(sortedArrayOfStat[i].TotalRecovered / (sortedArrayOfCoyntries[i].population / 100000)),
-                GlobalDeathesPer100Thousand: Math.ceil(sortedArrayOfStat[i].TotalDeaths / (sortedArrayOfCoyntries[i].population / 100000)),
-                NewGlobalCasesPer100Thousand: Math.ceil(sortedArrayOfStat[i].NewConfirmed / (sortedArrayOfCoyntries[i].population / 100000)),
-                NewGlobalRecoveredPer100Thousand: Math.ceil(sortedArrayOfStat[i].NewRecovered / (sortedArrayOfCoyntries[i].population / 100000)),
-                NewGlobalDeathsPer100Thousand: Math.ceil(sortedArrayOfStat[i].NewDeaths / (sortedArrayOfCoyntries[i].population / 100000)),
-              };
-              state.countriesStat.push(obj);
-            }
+          .getAllCountriesPopulationAndFlags()
+          .then((countriesStat) => {
+            covidData.forEach((elem) => {
+              countriesStat.forEach((item) => {
+                if (elem.CountryCode === item.alpha2Code) {
+                  Object.assign(elem, item);
+                  ['alpha2Code', 'name', 'Slug', 'Date', 'Premium'].forEach((i) => delete elem[i]);
+                  elem.id = ind++;
+                  elem.GlobalCasesPer100Thousand = Math.ceil(elem.TotalConfirmed / (elem.population / 100000));
+                  elem.GlobalRecoveredPer100Thousand = Math.ceil(elem.TotalRecovered / (elem.population / 100000));
+                  elem.GlobalDeathesPer100Thousand = Math.ceil(elem.TotalDeaths / (elem.population / 100000));
+                  elem.NewGlobalCasesPer100Thousand = Math.ceil(elem.NewConfirmed / (elem.population / 100000));
+                  elem.NewGlobalRecoveredPer100Thousand = Math.ceil(elem.NewRecovered / (elem.population / 100000));
+                  elem.NewGlobalDeathsPer100Thousand = Math.ceil(elem.NewDeaths / (elem.population / 100000));
 
-            const globalCasesPer100Thousand = Math.ceil(response.Global.TotalConfirmed / (state.population / 100000));
-            const globalRecoveredPer100Thousand = Math.ceil(response.Global.TotalRecovered / (state.population / 100000));
-            const globalDeathsPer100Thousand = Math.ceil(response.Global.TotalDeaths / (state.population / 100000));
-            const newGlobalCasesPer100Thousand = Math.ceil(response.Global.NewConfirmed / (state.population / 100000));
-            const newGlobalRecoveredPer100Thousand = Math.ceil(response.Global.NewRecovered / (state.population / 100000));
-            const newGlobalDeathsPer100Thousand = Math.ceil(response.Global.NewDeaths / (state.population / 100000));
-            const obj = {
-              GlobalCases: response.Global.TotalConfirmed,
-              GlobalRecovered: response.Global.TotalRecovered,
-              GlobalDeaths: response.Global.TotalDeaths,
-              NewGlobalCases: response.Global.NewConfirmed,
-              NewGlobalRecovered: response.Global.NewRecovered,
-              NewGlobalDeaths: response.Global.NewDeaths,
+                  populationCount += item.population;
+                }
+              });
+            });
+
+            const globalCasesPer100Thousand = Math.ceil(globalStat.TotalConfirmed / (populationCount / 100000));
+            const globalRecoveredPer100Thousand = Math.ceil(globalStat.TotalRecovered / (populationCount / 100000));
+            const globalDeathsPer100Thousand = Math.ceil(globalStat.TotalDeaths / (populationCount / 100000));
+            const newGlobalCasesPer100Thousand = Math.ceil(globalStat.NewConfirmed / (populationCount / 100000));
+            const newGlobalRecoveredPer100Thousand = Math.ceil(globalStat.NewRecovered / (populationCount / 100000));
+            const newGlobalDeathsPer100Thousand = Math.ceil(globalStat.NewDeaths / (populationCount / 100000));
+            const globalCovidData = {
+              GlobalCases: globalStat.TotalConfirmed,
+              GlobalRecovered: globalStat.TotalRecovered,
+              GlobalDeaths: globalStat.TotalDeaths,
+              NewGlobalCases: globalStat.NewConfirmed,
+              NewGlobalRecovered: globalStat.NewRecovered,
+              NewGlobalDeaths: globalStat.NewDeaths,
               GlobalCasesPer100Thousand: globalCasesPer100Thousand,
               GlobalRecoveredPer100Thousand: globalRecoveredPer100Thousand,
               GlobalDeathsPer100Thousand: globalDeathsPer100Thousand,
@@ -75,11 +57,14 @@ const covidStatState = () => {
               NewGlobalRecoveredPer100Thousand: newGlobalRecoveredPer100Thousand,
               NewGlobalDeathsPer100Thousand: newGlobalDeathsPer100Thousand,
             };
-            state.globalStat = obj;
+
+            state.countriesStat = covidData;
+            state.globalStat = globalCovidData;
           });
       });
     return state;
   }
   return updateStatisctic();
 };
+
 export default covidStatState;

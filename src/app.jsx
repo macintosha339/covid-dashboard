@@ -11,9 +11,10 @@ import CovidService from './components/ServiceComponent';
 import covidStatState from './components/InitialStateComponent';
 
 function App() {
-  const [state, setState] = useState({});
+  const [state, setState] = useState(null);
   const [countriesStat, setCountriesStat] = useState([]);
   const [globalStat, setGlobalStat] = useState([]);
+  const [value, setValue] = useState(0);
   useEffect(() => {
     let isMounted = false;
     covidStatState()
@@ -40,9 +41,9 @@ function App() {
     <div className="wrapper">
       <Header />
       <GlobalCases />
-      <Map />
+      <Map countries={countriesStat} />
       <CasesWithDeathsAndRecovered />
-      <ListOfCountries countries={countriesStat} />
+      <ListOfCountries countries={countriesStat} stat={value} />
       <Chart data={data} />
     </div>
   );

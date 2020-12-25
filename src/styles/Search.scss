@@ -1,0 +1,21 @@
+.search-input {
+    width: 90%;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: black;
+    padding-left: 10px;
+    border-radius: 5px;
+    user-select: none;
+    margin-bottom: 5px;
+    outline: none;
+}
+
+input::-webkit-input-placeholder {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+input:focus::-webkit-input-placeholder {
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+}
