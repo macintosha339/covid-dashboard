@@ -11,36 +11,25 @@ import CovidService from './components/ServiceComponent';
 import covidStatState from './components/InitialStateComponent';
 
 function App() {
-  const [currentCountry, setCurrentCountry] = useState('Global');
-
-  const [currentPeriod, setCurrentPeriod] = useState('All period');
-  const setPeriod = () => {
-    if (currentPeriod === 'All period') {
-      setCurrentPeriod('Today');
-    } else {
-      setCurrentPeriod('All period');
-    }
-  };
+  const [state, setState] = useState({});
+  const [countriesStat, setCountriesStat] = useState([]);
+  const [globalStat, setGlobalStat] = useState([]);
   useEffect(() => {
-    console.log(currentPeriod);
-  }, [currentPeriod]);
+    let isMounted = false;
+    covidStatState()
+      .then((res) => {
+        if (!isMounted) {
+          setState(res);
+          setCountriesStat(res.countriesStat);
+          setGlobalStat(res.globalStat);
+        }
+      });
+    return () => {
+      isMounted = true;
+    };
+  }, []);
 
-  const [currentPopulation, setCurrentPopulation] = useState('All population');
-  const setPopulation = () => {
-    if (currentPopulation === 'All population') {
-      setCurrentPopulation('100k');
-    } else {
-      setCurrentPeriod('All population');
-    }
-  };
-  useEffect(() => {
-    console.log(currentPopulation);
-  }, [currentPopulation]);
-
-  const [currentRate, setCurrentRate] = useState('Cases');
-
-
-  let data = [];
+  const data = [];
   let visits = 10;
   for (let i = 1; i < 366; i++) {
     visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 100);
@@ -50,10 +39,10 @@ function App() {
   return (
     <div className="wrapper">
       <Header />
-      <GlobalCases currentCountry={currentCountry} currentPeriod={currentPeriod} />
+      <GlobalCases />
       <Map />
-      <CasesWithDeathsAndRecovered currentCountry={currentCountry} currentPeriod={currentPeriod} currentPopulation={currentPopulation} onPeriodClick={setPeriod} onPopulationClick={setPopulation} />
-      <ListOfCountries />
+      <CasesWithDeathsAndRecovered />
+      <ListOfCountries countries={countriesStat} />
       <Chart data={data} />
     </div>
   );
