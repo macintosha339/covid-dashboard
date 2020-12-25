@@ -77,6 +77,13 @@ body {
     align-items: center;
     position: relative;
     grid-area: deaths;
+    font-size: 32px;
+}
+
+.line {
+    height: 3px;
+    width: 100%;
+    background-color:  $color;
 }
 
 .list_countries {
