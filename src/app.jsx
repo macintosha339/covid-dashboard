@@ -39,6 +39,14 @@ function App() {
 
   const [currentRate, setCurrentRate] = useState('Cases');
 
+
+  let data = [];
+  let visits = 10;
+  for (let i = 1; i < 366; i++) {
+    visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 100);
+    data.push({ date: new Date(2019, 0, i), value: visits });
+  }
+
   return (
     <div className="wrapper">
       <Header />
@@ -46,7 +54,7 @@ function App() {
       <Map />
       <CasesWithDeathsAndRecovered currentCountry={currentCountry} currentPeriod={currentPeriod} currentPopulation={currentPopulation} onPeriodClick={setPeriod} onPopulationClick={setPopulation} />
       <ListOfCountries />
-      <Chart />
+      <Chart data={data} />
     </div>
   );
 }
