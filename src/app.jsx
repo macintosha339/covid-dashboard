@@ -8,13 +8,16 @@ import CasesWithDeathsAndRecovered from './components/CasesWithDeathsAndRecovere
 import ListOfCountries from './components/ListOfCountries';
 import Chart from './components/Chart';
 import CovidService from './components/ServiceComponent';
-import covidStatState from './components/InitialStateComponent';
+import { covidStatState } from './components/InitialStateComponent';
 
 function App() {
   const [state, setState] = useState(null);
   const [countriesStat, setCountriesStat] = useState([]);
   const [globalStat, setGlobalStat] = useState([]);
-  const [value, setValue] = useState(0);
+  const [countryHistoryStat, setCountryHistoryStat] = useState([1, 1]);
+  const [globalHistoryStat, setGlobalHistoryStat] = useState([]);
+  const [value, setValue] = useState('Total confirmed');
+  const [activeCountry, setActiveCountry] = useState(null);
   useEffect(() => {
     let isMounted = false;
     covidStatState()
@@ -23,6 +26,9 @@ function App() {
           setState(res);
           setCountriesStat(res.countriesStat);
           setGlobalStat(res.globalStat);
+          setGlobalStat(res.globalStat);
+          setGlobalStat(res.globalStat);
+          setGlobalHistoryStat(res.historyData);
         }
       });
     return () => {
@@ -30,21 +36,24 @@ function App() {
     };
   }, []);
 
-  const data = [];
-  let visits = 10;
-  for (let i = 1; i < 366; i++) {
-    visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 100);
-    data.push({ date: new Date(2019, 0, i), value: visits });
-  }
-
   return (
     <div className="wrapper">
       <Header />
       <GlobalCases />
-      <Map countries={countriesStat} />
-      <CasesWithDeathsAndRecovered />
-      <ListOfCountries countries={countriesStat} stat={value} />
-      <Chart data={data} />
+      <Map countries={countriesStat} stat={value} />
+      <CasesWithDeathsAndRecovered
+        global={global}
+        stat={value}
+        activeCountry={activeCountry}
+        countries={countriesStat}
+      />
+      <ListOfCountries countries={countriesStat} stat={value} activeCountry={activeCountry} setActiveCountry={setActiveCountry} setCountryHistoryStat={setGlobalHistoryStat} />
+      <Chart
+        stat={value}
+        activeCountry={activeCountry}
+        globalHistory={globalHistoryStat}
+        countryHistoryStat={countryHistoryStat}
+      />
     </div>
   );
 }

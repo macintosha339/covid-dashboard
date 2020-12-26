@@ -4,7 +4,7 @@ import '../styles/toggleSwitch.scss';
 
 function ToggleSwitcher(props) {
   const {
-    leftValue, rightValue, onPeriodClick, onPopulationClick,
+    leftValue, rightValue,
   } = props;
   return (
     <div className="content">
@@ -12,13 +12,6 @@ function ToggleSwitcher(props) {
       <label className="switch">
         <input
           type="checkbox"
-          onClick={(e) => {
-            if (e.target.parentNode.previousSibling.length < 12) {
-              onPeriodClick();
-            } else {
-              onPopulationClick();
-            }
-          }}
         />
         <span className="slider round" />
       </label>

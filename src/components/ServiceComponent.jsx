@@ -20,8 +20,16 @@ export default class CovidService {
   }
 
   async getAllCountriesPopulationAndFlags() {
-    const response = await this.getResource(`https://restcountries.eu/rest/v2/all?fields=name;population;flag;alpha2Code`);
+    const response = await this.getResource('https://restcountries.eu/rest/v2/all?fields=name;population;flag;alpha2Code');
 
     return response;
+  }
+
+  getHistoryCountryCases(countryCode) {
+    return this.getResource(`https://api.covid19api.com/total/country/${countryCode}`);
+  }
+
+  getHistoryGlobalCases() {
+    return this.getResource('https://covid19-api.org/api/timeline');
   }
 }

@@ -27,6 +27,17 @@ $colorOfCases: rgb(143, 16, 47);
     flex-direction: row;
     justify-content: flex-start;
     border-bottom: 2px solid $color;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.5s;
+}
+
+.cases-wrapper:hover {
+    background: rgba(0,0,0,0.4);
+}
+
+.active-country {
+    background: black;
 }
 
 .country-stat-wrapper {

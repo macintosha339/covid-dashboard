@@ -21,20 +21,20 @@ function CasesWithDeathsAndRecovered(props) {
       <div>{currentCountry}</div>
       <div>
         Cases:
-        {currentPeriod === 'All period' ? data.cases : data.todayCases}
+        {data.cases}
       </div>
       <div>
         Deaths:
-        {currentPeriod === 'All period' ? data.deaths : data.todayDeaths}
+        {data.deaths}
       </div>
       <div className="recoveries">
         Recoveries:
-        {currentPeriod === 'All period' ? data.recovered : data.todayRecovered}
+        {data.recovered}
       </div>
       <div className="line" />
       <FullScreenBtn />
-      <ToggleSwitcher leftValue="All period" rightValue="Today" onPeriodClick={onPeriodClick} />
-      <ToggleSwitcher leftValue="All population" rightValue="100k" onPopulationClick={onPopulationClick} />
+      <ToggleSwitcher leftValue="All period" rightValue="Today" />
+      <ToggleSwitcher leftValue="All population" rightValue="100k" />
     </div>
   );
 }
